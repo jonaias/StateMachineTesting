@@ -212,7 +212,10 @@ QList<InputOutput> StateMachine::getStatusSequence(State state){
 }
 
 QList<InputOutput> StateMachine::getResetSequence(){
-
+    QList<InputOutput> ret;
+    InputOutput io = {"\n", ""};
+    ret.append(io);
+    return ret;
 }
 
 QList<InputOutput> StateMachine::getTestSequence(){
