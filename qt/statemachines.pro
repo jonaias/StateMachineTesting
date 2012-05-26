@@ -9,7 +9,8 @@ QT       += core
 QT       -= gui
 
 TARGET = statemachines
-CONFIG   += console
+CONFIG   += console \
+    qtestlib
 CONFIG   -= app_bundle
 
 TEMPLATE = app
@@ -22,3 +23,7 @@ SOURCES += main.cpp \
 HEADERS += \
     statemachine.h \
     transition.h
+
+
+
+

@@ -1,10 +1,8 @@
 #ifndef STATEMACHINE_H
 #define STATEMACHINE_H
 
-#include <QObject>
-#include <QHash>
+#include <QtCore>
 #include "transition.h"
-#include <QDebug>
 
 struct InputOutput{
     Input input;
@@ -16,10 +14,17 @@ class StateMachine : public QObject
 {
     Q_OBJECT
 public:
+    /*!
+      * \brief Creates an empty FSM.
+      */
     explicit StateMachine(QObject *parent = 0);
+
+    /*!
+      *  \brief Loads an FSM from a file.
+      */
+    int loadFromFile(QString fileName);
+
     void addTransition(Transition *transition);
-    
-    void printTransitions();
     QList<Transition *> getTransitionsExiting(State state);
     QList<State> getNextStates(State initialState);
     State getInitialState();
@@ -31,10 +36,13 @@ public:
     QList<InputOutput> getStatusSequence(State state);
     QList<InputOutput> getResetSequence();
     QList<InputOutput> getTestSequence();
+    QList<Output> getNextOutputOnInput(State state, Input input);
+
+    void printTransitions();
     void printStates();
     void printInputs();
     void printOutput();
-    QList<Output> getNextOutputOnInput(State state, Input input);
+
 signals:
     
 public slots:

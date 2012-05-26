@@ -1,4 +1,4 @@
-#include <QCoreApplication>
+#include <QtCore>
 #include "statemachine.h"
 
 int main(int argc, char *argv[])

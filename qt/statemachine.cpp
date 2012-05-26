@@ -1,8 +1,60 @@
 #include "statemachine.h"
+#include <iostream>
 
 StateMachine::StateMachine(QObject *parent) :
     QObject(parent)
 {
+}
+
+int StateMachine::loadFromFile(QString fileName)
+{
+    QRegExp rx("^\\s*(\\S+)\\s--\\s(\\S+)\\s/\\s(\\S+)\\s->\\s(\\S+)\\s*$");
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        std::cerr << "Error while opening file \"" << fileName.toStdString() << "\"." << std::endl;
+        return 1;
+    }
+
+    QTextStream in(&file);
+    int i = 1;
+    while (!in.atEnd()) {
+        QString currLine = in.readLine();
+
+        int pos = rx.indexIn(currLine);
+        if (pos == -1) {
+            std::cerr << "Syntax error at input line "  << i << "." << std::endl;
+            return 1;
+        }
+        QStringList matched = rx.capturedTexts();
+
+        State initialState = matched[1],
+                finalState = matched[4];
+        Input input = matched[2];
+        Output output = matched[3];
+        Transition *t = new Transition(initialState, finalState, input, output);
+
+        if (!stateList.contains(initialState)) {
+            stateList.append(initialState);
+        }
+        if (!stateList.contains(finalState)) {
+            stateList.append(finalState);
+        }
+        if (!inputList.contains(input)) {
+            inputList.append(input);
+        }
+        if (!outputList.contains(output)) {
+            outputList.append(output);
+        }
+        if (!transitionList.contains(t)) {
+            transitionList.append(t);
+        }
+
+        i++;
+    }
+
+    file.close();
+    return 0;
 }
 
 void StateMachine::addTransition(Transition *transition)
@@ -181,11 +233,3 @@ QList<InputOutput> StateMachine::getResetSequence(){
 QList<InputOutput> StateMachine::getTestSequence(){
 
 }
-
-
-
-
-
-
-
-

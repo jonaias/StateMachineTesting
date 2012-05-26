@@ -18,8 +18,8 @@ public:
     State getFinalState();
     Input getInput();
     Output getOutput();
-
     QString print() const;
+
 private:
     State initialState;
     State finalState;
