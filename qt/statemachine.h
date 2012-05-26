@@ -23,7 +23,6 @@ public:
     QList<Transition *> getTransitionsExiting(State state);
     QList<State> getNextStates(State initialState);
     State getInitialState();
-    QList<State> getSynchronizationSequence(State state);
     QList<Input> getSeparatingSequence(State state1, State state2,
                                        QList< QPair<State, State> > *visited = new QList< QPair<State,State> >());
     QList<InputOutput> getReachingSequence(State startState, State endState,

@@ -32,12 +32,5 @@ int main(int argc, char *argv[])
         qDebug() << iterator1 << " ";
     }
 
-    qDebug() << "Sequencia de sincronizacao:";
-    foreach (State s,stateMachine.getSynchronizationSequence("4")) {
-        qDebug() << s << " ";
-    }
-
-
-
     return a.exec();
 }
