@@ -34,21 +34,7 @@ int StateMachine::loadFromFile(QString fileName)
         Output output = matched[3];
         Transition *t = new Transition(initialState, finalState, input, output);
 
-        if (!stateList.contains(initialState)) {
-            stateList.append(initialState);
-        }
-        if (!stateList.contains(finalState)) {
-            stateList.append(finalState);
-        }
-        if (!inputList.contains(input)) {
-            inputList.append(input);
-        }
-        if (!outputList.contains(output)) {
-            outputList.append(output);
-        }
-        if (!transitionList.contains(t)) {
-            transitionList.append(t);
-        }
+        addTransition(t);
 
         i++;
     }
@@ -72,7 +58,6 @@ void StateMachine::addTransition(Transition *transition)
     if (!outputList.contains(transition->getOutput())){
         outputList.append(transition->getOutput());
     }
-
 }
 
 void StateMachine::printTransitions(){
