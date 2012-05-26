@@ -48,8 +48,6 @@ private:
 
     QList<State> getNextStatesOnInputL(QList<State> states, Input input);
     QList<State> getNextStatesOnInput(State State, Input input);
-    QList<Input>* __getSynchronizationSequence(QList<State> states, QList<Input> *inputs,
-                                               State targetState, QList<QList<State> > *visited);
 };
 
 #endif // STATEMACHINE_H

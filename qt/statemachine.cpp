@@ -67,12 +67,6 @@ State StateMachine::getInitialState(){
     return stateList.first();
 }
 
-QList<State> StateMachine::getSynchronizationSequence(State state){
-    QList<Input> *inputs = new QList<Input>;
-    QList<QList<State> > *visited = new QList<QList<State> >;
-    return *__getSynchronizationSequence(stateList, inputs, state, visited);
-}
-
 QList<State> StateMachine::getNextStatesOnInput(State state, Input input) {
     QList<State> ret;
     foreach(Transition *t, transitionList) {
@@ -106,30 +100,6 @@ QList<Output> StateMachine::getNextOutputOnInput(State state, Input input) {
         }
     }
     return ret;
-}
-
-
-QList<Input>* StateMachine::__getSynchronizationSequence(QList<State> states, QList<Input> *inputs,
-                                          State targetState, QList<QList<State> > *visited) {
-    if (visited->contains(states)) {
-        return NULL;
-    } else if (states.size() == 1 && states.contains(targetState)) {
-        return inputs;
-    } else if (states.size() == 1 && !states.contains(targetState)) {
-        return NULL;
-    } else {
-        visited->append(QList<State>(states));
-        foreach(Input i, inputList) {
-            inputs->append(i);
-            QList<Input> *aux;
-            if ((aux = __getSynchronizationSequence(getNextStatesOnInputL(states, i), inputs, targetState, visited))) {
-                return aux;
-            } else {
-                inputs->removeLast();
-            }
-        }
-        return NULL;
-    }
 }
 
 QList<Input> StateMachine::getSeparatingSequence(State state1, State state2, QList<QPair<State, State> > *visited){
