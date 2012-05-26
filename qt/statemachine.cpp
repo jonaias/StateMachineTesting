@@ -168,7 +168,6 @@ QList<Input> StateMachine::getSeparatingSequence(State state1, State state2, QLi
     return QList<State>();
 }
 
-
 QList<InputOutput> StateMachine::getReachingSequence( State startState, State endState, QList<State> *explored){
     explored->append(startState);
 
@@ -199,15 +198,15 @@ QList<InputOutput> StateMachine::getReachingSequence( State startState, State en
     return result;
 }
 
-
 QList<InputOutput> StateMachine::getSetSequence(State state){
    QList<InputOutput> result;
    result.append(getResetSequence());
    result.append(getReachingSequence(getInitialState(),state));
+   result.append(getStatusSequence(state));
    return result;
 }
 
-QList<InputOutput> StateMachine::getStatusSequence(State state){
+QList<InputOutput> StateMachine::getStatusSequence(State state) {
 
 }
 
