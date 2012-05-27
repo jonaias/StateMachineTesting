@@ -24,6 +24,8 @@ HEADERS += \
     statemachine.h \
     transition.h
 
+OTHER_FILES +=
+
 
 
 
