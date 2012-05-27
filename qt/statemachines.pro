@@ -26,6 +26,4 @@ HEADERS += \
 
 OTHER_FILES +=
 
-
-
-
+DESTDIR = "../csharp"
