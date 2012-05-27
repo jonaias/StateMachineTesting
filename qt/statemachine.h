@@ -113,6 +113,12 @@ public:
     void printInputs();
     void printOutput();
 
+    /*! \brief Receives InputOutput list and writes only inputs to file fileName
+      * \param ioSequence List of InputOutput.
+      * \param fileName File name to write inputs.
+      * \return void.
+      */
+    void writeInputSequenceToFile(QList<InputOutput> ioSequence, QString fileName);
 signals:
     
 public slots:

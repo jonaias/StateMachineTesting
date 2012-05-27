@@ -38,7 +38,7 @@ namespace MethodGroup1
             //define current work path
             string currentPath = Directory.GetCurrentDirectory()+ @"\";
             string machineFile = @"machine.txt";
-            string outputFile = @"test_sequence.txt";
+            string outputFile = @"sequence.txt";
             
             //Add aliases to machine (stateNAme => s_0)
             Dictionary<string, string> aliases = new Dictionary<string,string>();

@@ -13,7 +13,7 @@ int StateMachine::loadFromFile(QString fileName)
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         std::cerr << "Error while opening file \"" << fileName.toStdString() << "\"." << std::endl;
-        return 1;
+        exit(1);
     }
 
     QTextStream in(&file);
@@ -24,9 +24,10 @@ int StateMachine::loadFromFile(QString fileName)
         int pos = rx.indexIn(currLine);
         if (pos == -1) {
             std::cerr << "Syntax error at input line "  << i << "." << std::endl;
-            return 1;
+            exit(1);
         }
         QStringList matched = rx.capturedTexts();
+
 
         State initialState = matched[1],
                 finalState = matched[4];
@@ -286,7 +287,7 @@ QList<InputOutput> StateMachine::getStatusSequence(State state)
 QList<InputOutput> StateMachine::getResetSequence()
 {
     QList<InputOutput> result;
-    InputOutput io = {"RESET", ""};
+    InputOutput io = {"\n", ""};
     result.append(io);
     return result;
 }
@@ -339,4 +340,26 @@ QList<InputOutput> StateMachine::getTestSequence()
     qDebug() << "RESET" << "STATUS";
     result << (getResetSequence() << getStatusSequence(getInitialState()));
     return result;
+}
+
+void StateMachine::writeInputSequenceToFile(QList<InputOutput> ioSequence, QString fileName){
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        std::cerr << "Error while opening file \"" << fileName.toStdString() << "\"." << std::endl;
+        exit(1);
+    }
+
+    QTextStream out(&file);
+    /* Get input list from an input output list */
+    QList<Input> inputSequence = getInputs(ioSequence);
+
+    /* Write input list to file */
+    foreach(Input input, inputSequence){
+        out << input;
+    }
+
+    out.flush();
+
+    file.close();
+
 }
