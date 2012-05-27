@@ -60,26 +60,31 @@ void StateMachine::addTransition(Transition *transition)
     }
 }
 
-void StateMachine::printTransitions(){
+void StateMachine::printTransitions()
+{
     Transition *transition;
      foreach (transition, transitionList){
         qDebug() << transition->print();
      }
 }
 
-void StateMachine::printStates(){
+void StateMachine::printStates()
+{
     qDebug() << stateList;
 }
 
-void StateMachine::printInputs(){
+void StateMachine::printInputs()
+{
     qDebug() << inputList;
 }
 
-void StateMachine::printOutput(){
+void StateMachine::printOutput()
+{
     qDebug() << outputList;
 }
 
-QList<Transition*> StateMachine::getTransitionsExiting(State state){
+QList<Transition*> StateMachine::getTransitionsExiting(State state)
+{
     QList<Transition*> transitionsExiting;
     Transition *transition;
     foreach(transition,transitionList){
@@ -90,7 +95,8 @@ QList<Transition*> StateMachine::getTransitionsExiting(State state){
     return transitionsExiting;
 }
 
-QList<State> StateMachine::getNextStates(State initialState){
+QList<State> StateMachine::getNextStates(State initialState)
+{
     QList<State> nextStates;
     QList<Transition*> transitionsExiting = getTransitionsExiting(initialState);
     Transition *transition;
@@ -100,35 +106,33 @@ QList<State> StateMachine::getNextStates(State initialState){
     return nextStates;
 }
 
-State StateMachine::getInitialState(){
+State StateMachine::getInitialState()
+{
     return stateList.first();
 }
 
-QList<State> StateMachine::getNextStatesOnInput(State state, Input input) {
-    QList<State> ret;
+State StateMachine::getNextStateOnInput(State state, Input input)
+{
     foreach(Transition *t, transitionList) {
         if (t->getInput() == input && t->getInitialState() == state) {
-            if (!ret.contains(t->getFinalState()))
-                ret.append(t->getFinalState());
+            return t->getFinalState();
         }
     }
-    return ret;
+    return NULL;
 }
 
-QList<Input> StateMachine::getNextStatesOnInputL(QList<State> states, Input input) {
+QList<Input> StateMachine::getNextStatesOnInput(QList<State> states, Input input)
+{
     QList<State> ret;
     foreach (State s, states) {
-        QList<State> nextStates = getNextStatesOnInput(s, input);
-        foreach(State nextState, nextStates) {
-            if (!ret.contains(nextState)) {
-                ret.append(nextState);
-            }
-        }
+        State nextState = getNextStateOnInput(s, input);
+        ret << nextState;
     }
     return ret;
 }
 
-QList<Output> StateMachine::getNextOutputOnInput(State state, Input input) {
+QList<Output> StateMachine::getNextOutputOnInput(State state, Input input)
+{
     QList<Output> ret;
     foreach(Transition *t, transitionList) {
         if (t->getInput() == input && t->getInitialState() == state) {
@@ -163,8 +167,8 @@ QList<Input> StateMachine::getSeparatingSequence(State state1, State state2, QLi
 
     Input input;
     foreach(input,inputList){
-        State nextState1 = getNextStatesOnInput(state1,input).first();
-        State nextState2 = getNextStatesOnInput(state2,input).first();
+        State nextState1 = getNextStateOnInput(state1,input);
+        State nextState2 = getNextStateOnInput(state2,input);
 
         if( getNextOutputOnInput(state1,input)!=getNextOutputOnInput(state2,input)){
             result.append(input);
@@ -261,6 +265,8 @@ QList<QList<Input> > StateMachine::generateHSequence(State state)
         else
             i++;
     }
+
+    return h;
 }
 
 QList<InputOutput> StateMachine::getStatusSequence(State state)
@@ -269,18 +275,68 @@ QList<InputOutput> StateMachine::getStatusSequence(State state)
     QList<QList<Input> > hSequence = generateHSequence(state);
     foreach(QList<Input> inputSequence, hSequence) {
         QList<InputOutput> ioSequence = getInputOutputSequenceFromInput(state, inputSequence);
-        result.append(getResetSequence() + getReachingSequence(getInitialState(), state) + ioSequence);
+        if (state != getInitialState())
+            result.append(getResetSequence() + getReachingSequence(getInitialState(), state) + ioSequence);
+        else
+            result.append(getResetSequence() + ioSequence);
     }
     return result;
 }
 
-QList<InputOutput> StateMachine::getResetSequence(){
-    QList<InputOutput> ret;
-    InputOutput io = {"\n", ""};
-    ret.append(io);
-    return ret;
+QList<InputOutput> StateMachine::getResetSequence()
+{
+    QList<InputOutput> result;
+    InputOutput io = {"RESET", ""};
+    result.append(io);
+    return result;
 }
 
-QList<InputOutput> StateMachine::getTestSequence(){
+State StateMachine::getFinalStateOnInputs(State state, QList<Input> inputs)
+{
+    foreach(Input i, inputs) {
+        state = getNextStateOnInput(state, i);
+    }
+    return state;
+}
 
+QList<Input> getInputs(QList<InputOutput> io)
+{
+    QList<Input> result;
+    foreach(InputOutput _io, io) {
+        result << _io.input;
+    }
+    return result;
+}
+
+QList<InputOutput> StateMachine::getTestSequence()
+{
+    QList<InputOutput> result;
+    foreach(Transition *t, transitionList) {
+        qDebug() << ("Testing transition: " + t->print());
+        InputOutput currIo = {t->getInput(), t->getOutput()};
+        QList<InputOutput> aux; aux << currIo;
+
+        if(t->getInitialState() != this->getInitialState()) {
+            QList<InputOutput> setSequence = getSetSequence(t->getInitialState());
+
+            qDebug() << "RESET";
+            qDebug() << ("setSequence for " + t->getInitialState() + ":");
+            qDebug() << getInputs(setSequence);
+            qDebug() << currIo.input;
+            qDebug() << ("statusSequence for " + t->getFinalState() + ":");
+            qDebug() << getInputs(getStatusSequence(t->getFinalState()));
+
+            result << (getResetSequence() << setSequence << aux << getStatusSequence(t->getFinalState()));
+        } else {
+            qDebug() << "RESET";
+            qDebug() << currIo.input;
+            qDebug() << ("statusSequence for " + t->getFinalState() + ":");
+            qDebug() << getInputs(getStatusSequence(t->getFinalState()));
+
+            result << (getResetSequence() << aux << getStatusSequence(t->getFinalState()));
+        }
+    }
+    qDebug() << "RESET" << "STATUS";
+    result << (getResetSequence() << getStatusSequence(getInitialState()));
+    return result;
 }

@@ -92,6 +92,22 @@ public:
 
     QList<InputOutput> getInputOutputSequenceFromInput(State state, QList<Input> input);
 
+    /*! \brief Returns the expected output of the implementation, assuming
+      *     it is in a known state.
+      * \param state The assumed current state of the implementation.
+      * \param input The given input.
+      * \return The expected output, given in a list for convenience.
+      */
+    QList<Output> getNextOutputOnInput(State state, Input input);
+
+    State getNextStateOnInput(State state, Input input);
+
+    State getFinalStateOnInputs(State state, QList<Input> inputs);
+
+    QList<State> getNextStatesOnInput(QList<State> states, Input input);
+
+    QList<QList<Input> > generateHSequence(State state);
+
     void printTransitions();
     void printStates();
     void printInputs();
@@ -106,20 +122,6 @@ private:
     QList<State> stateList;
     QList<State> inputList;
     QList<State> outputList;
-
-    /*! \brief Returns the expected output of the implementation, assuming
-      *     it is in a known state.
-      * \param state The assumed current state of the implementation.
-      * \param input The given input.
-      * \return The expected output, given in a list for convenience.
-      */
-    QList<Output> getNextOutputOnInput(State state, Input input);
-
-    QList<State> getNextStatesOnInput(State State, Input input);
-
-    QList<State> getNextStatesOnInputL(QList<State> states, Input input);
-
-    QList<QList<Input> > generateHSequence(State state);
 };
 
 #endif // STATEMACHINE_H

@@ -1,5 +1,6 @@
 #include <QtCore>
 #include "statemachine.h"
+#include <iostream>
 
 /*
 bool _isRedundant(QList<Input> input, QList<QList<Input> > inputsList)
@@ -40,6 +41,7 @@ int main(int argc, char *argv[])
     stateMachine.printInputs();
     stateMachine.printOutput();
     stateMachine.printStates();
+
     QList<InputOutput> list = stateMachine.getReachingSequence("S2","S3");
     InputOutput iterator;
     foreach(iterator,list){
@@ -53,6 +55,7 @@ int main(int argc, char *argv[])
         qDebug() << iterator1 << " ";
     }
 
+    /*
     QList<Input> i;
     i << "d" << "e";
     QList<QList<Input> > *h = new QList<QList<Input> >;
@@ -65,9 +68,35 @@ int main(int argc, char *argv[])
     h->append(i);
 
     //removeRedundants(h);
+    */
+
     QList<Input> inputs;
     inputs << "b" << "b" << "a" << "b";
-    QList<InputOutput> io = stateMachine.getInputOutputSequenceFromInput("1", inputs);
+    QList<InputOutput> io = stateMachine.getInputOutputSequenceFromInput("S1", inputs);
+
+    foreach (InputOutput _io, io) {
+        qDebug() << _io.input << " ";
+        qDebug() << _io.output << " ";
+    }
+    qDebug() << "\n";
+
+    QList<InputOutput> statusSeq = stateMachine.getStatusSequence("S1");
+    foreach (InputOutput _io, statusSeq) {
+        qDebug() << _io.input << " ";
+    }
+
+    qDebug() << "H sequence for S1: ";
+    qDebug() << stateMachine.generateHSequence("S1");
+    qDebug() << "H sequence for S2: ";
+    qDebug() << stateMachine.generateHSequence("S2");
+    qDebug() << "H sequence for S3: ";
+    qDebug() << stateMachine.generateHSequence("S3");
+    qDebug() << "H sequence for S4: ";
+    qDebug() << stateMachine.generateHSequence("S4");
+    qDebug() << "H sequence for S5: ";
+    qDebug() << stateMachine.generateHSequence("S5");
+
+    QList<InputOutput> testSequence = stateMachine.getTestSequence();
 
     return 0;
 }
