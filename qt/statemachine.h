@@ -90,6 +90,8 @@ public:
       */
     QList<InputOutput> getTestSequence();
 
+    QList<InputOutput> getInputOutputSequenceFromInput(State state, QList<Input> input);
+
     void printTransitions();
     void printStates();
     void printInputs();

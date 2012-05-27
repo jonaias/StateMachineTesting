@@ -73,7 +73,10 @@ int main(int argc, char *argv[])
     h->append(i2);
     h->append(i);
 
-    removeRedundants(h);
+    //removeRedundants(h);
+    QList<Input> inputs;
+    inputs << "b" << "b" << "a" << "b";
+    QList<InputOutput> io = stateMachine.getInputOutputSequenceFromInput("1", inputs);
 
     return 0;
 }

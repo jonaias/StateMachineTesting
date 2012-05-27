@@ -132,11 +132,27 @@ QList<Output> StateMachine::getNextOutputOnInput(State state, Input input) {
     QList<Output> ret;
     foreach(Transition *t, transitionList) {
         if (t->getInput() == input && t->getInitialState() == state) {
-            if (!ret.contains(t->getFinalState()))
+            if (!ret.contains(t->getFinalState())) // XXX: ESQUISITO ISSO!!!!
                 ret.append(t->getOutput());
         }
     }
     return ret;
+}
+
+QList<InputOutput> StateMachine::getInputOutputSequenceFromInput(State state, QList<Input> inputList)
+{
+    QList<InputOutput> result;
+    for(int i=0; i<inputList.size(); i++) {
+        foreach(Transition *t, transitionList) {
+            if(t->getInput() == inputList[i] && t->getInitialState() == state) {
+                InputOutput io = {t->getInput(), t->getOutput()};
+                result.append(io);
+                state = t->getFinalState();
+                break;
+            }
+        }
+    }
+    return result;
 }
 
 QList<Input> StateMachine::getSeparatingSequence(State state1, State state2, QList<QPair<State, State> > *visited){
@@ -240,15 +256,22 @@ QList<QList<Input> > StateMachine::generateHSequence(State state)
     /* Finally, we remove redundant sequences. */
     QList<QList<Input> >::iterator i = h.begin();
     while(i != h.end()) {
-        if (_isRedundant(*i, h))
+        if (isRedundant(*i, h))
             i = h.erase(i);
         else
             i++;
     }
 }
 
-QList<InputOutput> StateMachine::getStatusSequence(State state) {
-
+QList<InputOutput> StateMachine::getStatusSequence(State state)
+{
+    QList<InputOutput> result;
+    QList<QList<Input> > hSequence = generateHSequence(state);
+    foreach(QList<Input> inputSequence, hSequence) {
+        QList<InputOutput> ioSequence = getInputOutputSequenceFromInput(state, inputSequence);
+        result.append(getResetSequence() + getReachingSequence(getInitialState(), state) + ioSequence);
+    }
+    return result;
 }
 
 QList<InputOutput> StateMachine::getResetSequence(){
