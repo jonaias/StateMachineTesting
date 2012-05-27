@@ -14,13 +14,13 @@ class StateMachine : public QObject
 {
     Q_OBJECT
 public:
-    /*!
-      * \brief Creates an empty FSM.
+    /*! \brief Creates an empty FSM.
+      *
       */
     explicit StateMachine(QObject *parent = 0);
 
-    /*!
-      *  \brief Loads an FSM from a file.
+    /*! \brief Loads an FSM from a file.
+      * \param fileName A path to the file from which the machine is to be loaded.
       */
     int loadFromFile(QString fileName);
 
@@ -116,6 +116,8 @@ private:
     QList<State> getNextStatesOnInput(State State, Input input);
 
     QList<State> getNextStatesOnInputL(QList<State> states, Input input);
+
+    QList<QList<Input> > generateHSequence(State state);
 };
 
 #endif // STATEMACHINE_H

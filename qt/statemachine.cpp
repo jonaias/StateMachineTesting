@@ -206,6 +206,47 @@ QList<InputOutput> StateMachine::getSetSequence(State state){
    return result;
 }
 
+bool isRedundant(QList<Input> input, QList<QList<Input> > inputsList)
+{
+    foreach(QList<Input> otherInput, inputsList) {
+        if(input.size() < otherInput.size()) {
+            bool isPrefix = true;
+            for(int i=0; i<input.size() && isPrefix; i++) {
+                if(input[i] != otherInput[i])
+                    isPrefix = false;
+            }
+            if (isPrefix) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+QList<QList<Input> > StateMachine::generateHSequence(State state)
+{
+    /* First of all, we need the list of the states other than "state". */
+    QList<State> otherStates = stateList;
+    otherStates.removeOne(state);
+
+    /* Then, we find the separation sequence between "state" and all other states. */
+    QList<QList<Input> > h;
+    foreach(State s, otherStates) {
+        QList<Input> currrentSeparationSequence = getSeparatingSequence(state, s);
+        if(!h.contains(currrentSeparationSequence))
+            h.append(currrentSeparationSequence);
+    }
+
+    /* Finally, we remove redundant sequences. */
+    QList<QList<Input> >::iterator i = h.begin();
+    while(i != h.end()) {
+        if (_isRedundant(*i, h))
+            i = h.erase(i);
+        else
+            i++;
+    }
+}
+
 QList<InputOutput> StateMachine::getStatusSequence(State state) {
 
 }
