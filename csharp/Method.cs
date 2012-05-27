@@ -36,28 +36,30 @@ namespace MethodGroup1
             ///////////////////
 
             //define current work path
-            string myPath = Directory.GetCurrentDirectory()+ @"\";
+            string currentPath = Directory.GetCurrentDirectory()+ @"\";
+            string machineFile = @"machine.txt";
+            string outputFile = @"test_sequence.txt";
             
             //Add aliases to machine (stateNAme => s_0)
             Dictionary<string, string> aliases = new Dictionary<string,string>();
             AddMachineAliases(aliases);
 
             //Export fsm as text.
-            this.WriteFsmToFile(fsm, myPath + "example0.txt");
+            this.WriteFsmToFile(fsm, currentPath + machineFile);
 
 
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Process p = new Process();
 
-            p.StartInfo.FileName = @"C:\Program Files (x86)\Java\jre6\bin\java.exe"; // start java
-            p.StartInfo.Arguments = @"-jar """+ myPath + @"Method.jar"" """ + myPath + @"Machine.txt"" """ + myPath +@"Sequences.txt""";
+            p.StartInfo.FileName = currentPath + @"statemachines.exe"; // start qt executable
+            p.StartInfo.Arguments = machineFile + @" " + outputFile;
             p.StartInfo.UseShellExecute = false; //Should be enable to redirect output
             p.StartInfo.RedirectStandardOutput = true; //redirect java output to console window
             p.Start();
             p.WaitForExit();
 
             //print output
-            TextReader reader = new StreamReader(myPath + "Sequences.txt");
+            TextReader reader = new StreamReader(currentPath + outputFile);
             string output = reader.ReadToEnd();
             reader.Close();
             Console.WriteLine(output);
@@ -66,7 +68,7 @@ namespace MethodGroup1
             Console.ForegroundColor = ConsoleColor.White;
 
             //returns a set of sequences.
-            List<TestSequence> sequences = this.ReadSequencesFromFile(myPath + "Sequences.txt");
+            List<TestSequence> sequences = this.ReadSequencesFromFile(currentPath + outputFile);
 
             //rename machines
             foreach (TestSequence seq in sequences)
