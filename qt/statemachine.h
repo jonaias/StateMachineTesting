@@ -67,7 +67,7 @@ public:
       */
     QList<InputOutput> getResetSequence();
 
-    /*! \brief Calculates the reaching sequence from the initial state to the giving state.
+    /*! \brief Calculates the reaching sequence from the initial state to the given state.
       * \param state The final state.
       * \return A sequence of input symbols, followed by theirs respective expected
       *     output symbol.
@@ -127,7 +127,11 @@ public:
       */
     QList<State> getNextStatesOnInput(QList<State> states, Input input);
 
-
+    /*! \brief Generate a minimized sequence of separation sequences between a
+      *      state and all the others.
+      * \param state The state to separate.
+      * \return The sequence of separation sequences.
+      */
     QList<QList<Input> > generateHSequence(State state);
 
     /*! \brief Print all possible transitions of loaded state machine
