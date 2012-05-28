@@ -137,19 +137,19 @@ QList<Output> StateMachine::getNextOutputOnInput(State state, Input input)
     QList<Output> ret;
     foreach(Transition *t, transitionList) {
         if (t->getInput() == input && t->getInitialState() == state) {
-            if (!ret.contains(t->getFinalState())) // XXX: ESQUISITO ISSO!!!!
+            if (!ret.contains(t->getFinalState()))
                 ret.append(t->getOutput());
         }
     }
     return ret;
 }
 
-QList<InputOutput> StateMachine::getInputOutputSequenceFromInput(State state, QList<Input> inputList)
+QList<InputOutput> StateMachine::getInputOutputSequenceFromInput(State state, QList<Input> inputs)
 {
     QList<InputOutput> result;
-    for(int i=0; i<inputList.size(); i++) {
+    for(int i=0; i<inputs.size(); i++) {
         foreach(Transition *t, transitionList) {
-            if(t->getInput() == inputList[i] && t->getInitialState() == state) {
+            if(t->getInput() == inputs[i] && t->getInitialState() == state) {
                 InputOutput io = {t->getInput(), t->getOutput()};
                 result.append(io);
                 state = t->getFinalState();
