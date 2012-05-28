@@ -67,10 +67,9 @@ public:
       */
     QList<InputOutput> getResetSequence();
 
-    /*! \brief Calculates a sequence that, no matter which state the implementation is in,
-      *     take it to a given state.
+    /*! \brief Calculates the reaching sequence from the initial state to the giving state.
       * \param state The final state.
-      * \return A sequence of input symbols, followed by theirs respecting expected
+      * \return A sequence of input symbols, followed by theirs respective expected
       *     output symbol.
       */
     QList<InputOutput> getSetSequence(State state);
@@ -78,14 +77,14 @@ public:
     /*! \brief Calculates a sequence that determines whether or not the
       *     implementation is at a given state.
 
-      * \return A sequence of input symbols, followed by theirs respecting expected
+      * \return A sequence of input symbols, followed by theirs respective expected
       *     output symbol.
       */
     QList<InputOutput> getStatusSequence(State state);
 
     /*! \brief Returns a sequence that allows testing the correctness of
       *     an implementation of this FSM.
-      * \return A sequence of input symbols, followed by theirs respecting expected
+      * \return A sequence of input symbols, followed by theirs respective expected
       *     output symbol.
       */
     QList<InputOutput> getTestSequence();

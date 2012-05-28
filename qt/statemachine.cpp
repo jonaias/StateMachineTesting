@@ -136,7 +136,7 @@ QList<Output> StateMachine::getNextOutputOnInput(State state, Input input)
     QList<Output> ret;
     foreach(Transition *t, transitionList) {
         if (t->getInput() == input && t->getInitialState() == state) {
-            if (!ret.contains(t->getFinalState())) // XXX: ESQUISITO ISSO!!!!
+            if (!ret.contains(t->getFinalState()))
                 ret.append(t->getOutput());
         }
     }
@@ -219,11 +219,7 @@ QList<InputOutput> StateMachine::getReachingSequence( State startState, State en
 }
 
 QList<InputOutput> StateMachine::getSetSequence(State state){
-   QList<InputOutput> result;
-   result.append(getResetSequence());
-   result.append(getReachingSequence(getInitialState(),state));
-   result.append(getStatusSequence(state));
-   return result;
+   return getReachingSequence(getInitialState(),state);
 }
 
 bool isRedundant(QList<Input> input, QList<QList<Input> > inputsList)
@@ -286,7 +282,7 @@ QList<InputOutput> StateMachine::getStatusSequence(State state)
 QList<InputOutput> StateMachine::getResetSequence()
 {
     QList<InputOutput> result;
-    InputOutput io = {"RESET", ""};
+    InputOutput io = {"\n", ""};
     result.append(io);
     return result;
 }
@@ -336,7 +332,9 @@ QList<InputOutput> StateMachine::getTestSequence()
             result << (getResetSequence() << aux << getStatusSequence(t->getFinalState()));
         }
     }
-    qDebug() << "RESET" << "STATUS";
+    qDebug() << "RESET";
+    qDebug() << "Status sequence for " << getInitialState();
+    qDebug() << getInputs(getStatusSequence(getInitialState()));
     result << (getResetSequence() << getStatusSequence(getInitialState()));
     return result;
 }
