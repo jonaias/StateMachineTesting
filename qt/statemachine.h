@@ -89,7 +89,13 @@ public:
       */
     QList<InputOutput> getTestSequence();
 
-    QList<InputOutput> getInputOutputSequenceFromInput(State state, QList<Input> input);
+    /*! \brief Generates a sequence of InputOutput after applying a sequence of
+      *     input to a state
+      * \param state State used to apply input sequence.
+      * \param inputs Input list.
+      * \return Generated InputOutput list.
+      */
+    QList<InputOutput> getInputOutputSequenceFromInput(State state, QList<Input> inputs);
 
     /*! \brief Returns the expected output of the implementation, assuming
       *     it is in a known state.
@@ -99,19 +105,57 @@ public:
       */
     QList<Output> getNextOutputOnInput(State state, Input input);
 
+    /*! \brief Return next state on input
+      * \param state Initial state.
+      * \param input Input.
+      * \return Final state.
+      */
     State getNextStateOnInput(State state, Input input);
 
+    /*! \brief Return final state after applying a sequence of
+      *     input to a state
+      * \param state State used to apply input sequence.
+      * \param inputs Input list.
+      * \return Final state.
+      */
     State getFinalStateOnInputs(State state, QList<Input> inputs);
 
+    /*! \brief Return states after applying an input to a list of state
+      * \param states List of state.
+      * \param inputs Input.
+      * \return States after applying an input.
+      */
     QList<State> getNextStatesOnInput(QList<State> states, Input input);
+
 
     QList<QList<Input> > generateHSequence(State state);
 
+    /*! \brief Print all possible transitions of loaded state machine
+      * \return void.
+      */
     void printTransitions();
+
+    /*! \brief Print all possible states of loaded state machine
+      * \return void.
+      */
     void printStates();
+
+    /*! \brief Print all possible inputs of loaded state machine
+      * \return void.
+      */
     void printInputs();
+
+    /*! \brief Print all possible outputs of loaded state machine
+      * \return void.
+      */
     void printOutput();
 
+    /*! \brief Receives InputOutput list and writes only inputs to file fileName
+      * \param ioSequence List of InputOutput.
+      * \param fileName File name to write inputs.
+      * \return void.
+      */
+    void writeInputSequenceToFile(QList<InputOutput> ioSequence, QString fileName);
 signals:
     
 public slots:

@@ -27,3 +27,12 @@ HEADERS += \
 OTHER_FILES +=
 
 DESTDIR = "../csharp"
+
+CONFIG(debug, debug|release) {
+QMAKE_CXXFLAGS_DEBUG += -g3 -O0 -Wall
+message("DEBUG!")
+} else {
+DEFINES += QT_NO_DEBUG_OUTPUT
+QMAKE_CXXFLAGS_RELEASE += -O2
+message("RELEASE!")
+}
