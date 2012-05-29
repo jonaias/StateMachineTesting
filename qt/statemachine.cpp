@@ -351,10 +351,20 @@ void StateMachine::writeInputSequenceToFile(QList<InputOutput> ioSequence, QStri
     /* Get input list from an input output list */
     QList<Input> inputSequence = getInputs(ioSequence);
 
-    /* Write input list to file */
-    foreach(Input input, inputSequence){
-        out << input;
+
+    for(int i=0;i<inputSequence.length()-1;i++){
+        out << inputSequence[i];
+        if (inputSequence[i] == "\n"){
+            continue;
+        }
+        if (inputSequence[i+1] == "\n"){
+            continue;
+        }
+        out << ",";
+
     }
+
+    out << inputSequence.last();
 
     out.flush();
 
