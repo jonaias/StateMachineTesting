@@ -76,11 +76,12 @@ public:
 
     /*! \brief Calculates a sequence that determines whether or not the
       *     implementation is at a given state.
-
+      * \param state the state whose status sequence will be generated
+      * \param reachingSequence the sequence to be used to reach the given state.
       * \return A sequence of input symbols, followed by theirs respective expected
       *     output symbol.
       */
-    QList<InputOutput> getStatusSequence(State state);
+    QList<InputOutput> getStatusSequence(State state, QList<InputOutput> reachingSequence);
 
     /*! \brief Returns a sequence that allows testing the correctness of
       *     an implementation of this FSM.

@@ -266,14 +266,14 @@ QList<QList<Input> > StateMachine::generateHSequence(State state)
     return h;
 }
 
-QList<InputOutput> StateMachine::getStatusSequence(State state)
+QList<InputOutput> StateMachine::getStatusSequence(State state, QList<InputOutput> reachingSequence)
 {
     QList<InputOutput> result;
     QList<QList<Input> > hSequence = generateHSequence(state);
     foreach(QList<Input> inputSequence, hSequence) {
         QList<InputOutput> ioSequence = getInputOutputSequenceFromInput(state, inputSequence);
         if (state != getInitialState())
-            result.append(getResetSequence() + getReachingSequence(getInitialState(), state) + ioSequence);
+            result.append(getResetSequence() + reachingSequence + ioSequence);
         else
             result.append(getResetSequence() + ioSequence);
     }
@@ -315,30 +315,32 @@ QList<InputOutput> StateMachine::getTestSequence()
 
         if(t->getInitialState() != this->getInitialState()) {
             QList<InputOutput> setSequence = getSetSequence(t->getInitialState());
+            QList<InputOutput> reachingSequence = setSequence; reachingSequence << aux;
 
             qDebug() << "RESET";
             qDebug() << ("setSequence for " + t->getInitialState() + ":");
             qDebug() << getInputs(setSequence);
             qDebug() << currIo.input;
             qDebug() << ("statusSequence for " + t->getFinalState() + ":");
-            qDebug() << getInputs(getStatusSequence(t->getFinalState()));
+            qDebug() << getInputs(getStatusSequence(t->getFinalState(), reachingSequence));
 
-            result << (getResetSequence() << setSequence << aux << getStatusSequence(t->getFinalState()));
+            result << (getResetSequence() << reachingSequence << getStatusSequence(t->getFinalState(), reachingSequence));
         } else {
             qDebug() << "RESET";
             qDebug() << currIo.input;
             qDebug() << ("statusSequence for " + t->getFinalState() + ":");
-            qDebug() << getInputs(getStatusSequence(t->getFinalState()));
+            qDebug() << getInputs(getStatusSequence(t->getFinalState(), aux));
 
-            result << (getResetSequence() << aux << getStatusSequence(t->getFinalState()));
+            result << (getResetSequence() << aux << getStatusSequence(t->getFinalState(), aux));
         }
     }
+    QList<InputOutput> empty;
     qDebug() << "RESET";
     qDebug() << "Status sequence for " << getInitialState();
-    qDebug() << getInputs(getStatusSequence(getInitialState()));
+    qDebug() << getInputs(getStatusSequence(getInitialState(), empty));
     // RESET will be the first symbol of the status sequence for the initial state.
     // No need to call getResetSequence() before getStatusSequence.
-    result << (getStatusSequence(getInitialState()));
+    result << (getStatusSequence(getInitialState(), empty));
     return result;
 }
 
