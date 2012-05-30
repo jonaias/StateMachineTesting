@@ -336,7 +336,9 @@ QList<InputOutput> StateMachine::getTestSequence()
     qDebug() << "RESET";
     qDebug() << "Status sequence for " << getInitialState();
     qDebug() << getInputs(getStatusSequence(getInitialState()));
-    result << (getResetSequence() << getStatusSequence(getInitialState()));
+    // RESET will be the first symbol of the status sequence for the initial state.
+    // No need to call getResetSequence() before getStatusSequence.
+    result << (getStatusSequence(getInitialState()));
     return result;
 }
 
@@ -351,8 +353,8 @@ void StateMachine::writeInputSequenceToFile(QList<InputOutput> ioSequence, QStri
     /* Get input list from an input output list */
     QList<Input> inputSequence = getInputs(ioSequence);
 
-
-    for(int i=0;i<inputSequence.length()-1;i++){
+    /* i starts in 1 to skip the first reset (simply an ENTER), which, in this case, is unnecessary.*/
+    for(int i=1;i<inputSequence.length()-1;i++){
         out << inputSequence[i];
         if (inputSequence[i] == "\n"){
             continue;
