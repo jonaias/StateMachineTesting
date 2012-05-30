@@ -41,8 +41,8 @@ Output Transition::getOutput()
 
 QString Transition::print() const
 {
-    return "Initial state: " + initialState + ", Final state:" + finalState +
-            ", Input:" + input + ", Output:" + output;
+    return "Initial state: " + initialState + ", Final state: " + finalState +
+            ", Input: " + input + ", Output: " + output;
 }
 
 

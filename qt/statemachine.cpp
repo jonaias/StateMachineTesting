@@ -322,8 +322,7 @@ QList<Input> getInputs(QList<InputOutput> io)
 
 QList<InputOutput> StateMachine::getTestSequence()
 {
-    QList<InputOutput> result, empty; // "empty" is unnecessary; "result" could be used instead,
-                                      //    but it makes code clearer.
+    QList<InputOutput> result, empty;
     QList<State> evaluationOrder = getOptimizedEvaluationOrder();
 
     qDebug() <<  "Optimized evaluation order: ";
@@ -331,7 +330,7 @@ QList<InputOutput> StateMachine::getTestSequence()
 
     qDebug() << "Testing RESET-STATUS";
     qDebug() << "RESET";
-    qDebug() << "Status sequence for " << getInitialState() << ":";
+    qDebug() << "Status sequence for" << getInitialState() << ":";
     qDebug() << getInputs(getStatusSequence(getInitialState(), empty));
     // RESET will be the first symbol of the status sequence for the initial state.
     // No need to call getResetSequence() before getStatusSequence.
@@ -339,30 +338,42 @@ QList<InputOutput> StateMachine::getTestSequence()
 
     foreach (State s, evaluationOrder) {
         foreach(Transition *t, getTransitionsExiting(s)) {
-            qDebug() << ("Testing transition: " + t->print());
+            qDebug() << "Testing transition:" << t->print();
             InputOutput currIo = {t->getInput(), t->getOutput()};
             QList<InputOutput> aux; aux << currIo;
 
+            QList<InputOutput> setSequenceForInitialState;
+            QList<InputOutput> reachingSequenceForFinalState;
+
             if(t->getInitialState() != this->getInitialState()) {
-                QList<InputOutput> setSequence = getSetSequence(t->getInitialState());
-                QList<InputOutput> reachingSequence = setSequence; reachingSequence << aux;
-
-                qDebug() << "RESET";
-                qDebug() << ("Set sequence for " + t->getInitialState() + ":");
-                qDebug() << getInputs(setSequence);
-                qDebug() << currIo.input;
-                qDebug() << ("Status sequence for " + t->getFinalState() + " coming" + ":");
-                qDebug() << getInputs(getStatusSequence(t->getFinalState(), reachingSequence));
-
-                result << (getResetSequence() << reachingSequence << getStatusSequence(t->getFinalState(), reachingSequence));
+                setSequenceForInitialState = getSetSequence(t->getInitialState());
+                reachingSequenceForFinalState = setSequenceForInitialState;
             } else {
-                qDebug() << "RESET";
-                qDebug() << currIo.input;
-                qDebug() << ("Status sequence for " + t->getFinalState() + ":");
-                qDebug() << getInputs(getStatusSequence(t->getFinalState(), aux));
-
-                result << (getResetSequence() << aux << getStatusSequence(t->getFinalState(), aux));
+                setSequenceForInitialState = empty;
             }
+            reachingSequenceForFinalState << aux;
+
+            qDebug() << "RESET";
+            qDebug() << ("Set sequence for" + t->getInitialState() + ":");
+            qDebug() << getInputs(setSequenceForInitialState);
+            qDebug() << "Apply input" << currIo.input;
+            qDebug() << "Status sequence for" << t->getFinalState() << "coming from"
+                         << t->getInitialState() << "via" << currIo.input << "/" << currIo.output << ":";
+            qDebug() << getInputs(getStatusSequence(t->getFinalState(), reachingSequenceForFinalState));
+
+            result << (getResetSequence() << reachingSequenceForFinalState <<
+                       getStatusSequence(t->getFinalState(), reachingSequenceForFinalState));
+
+            ////////////
+            /*
+            qDebug() << "RESET";
+            qDebug() << "Apply input " + currIo.input;
+            qDebug() << ("Status sequence for " + t->getFinalState() + ":");
+            qDebug() << getInputs(getStatusSequence(t->getFinalState(), aux));
+
+            result << (getResetSequence() << aux << getStatusSequence(t->getFinalState(), aux));
+            */
+            ///////////
         }
     }
     return result;
