@@ -135,6 +135,13 @@ public:
       */
     QList<QList<Input> > generateHSequence(State state);
 
+    /*! \brief Returns the best order to evaluate the transitions of the machine,
+      *     which is given by evaluating the transitions exiting each state in
+      *     the list returned by this function, in order.
+      * \return The optimized evaluation order.
+      */
+    QList<State> getOptimizedEvaluationOrder();
+
     /*! \brief Print all possible transitions of loaded state machine
       * \return void.
       */
