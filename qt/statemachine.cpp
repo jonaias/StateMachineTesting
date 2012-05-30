@@ -351,7 +351,7 @@ QList<InputOutput> StateMachine::getTestSequence()
                 qDebug() << ("Set sequence for " + t->getInitialState() + ":");
                 qDebug() << getInputs(setSequence);
                 qDebug() << currIo.input;
-                qDebug() << ("Status sequence for " + t->getFinalState() + ":");
+                qDebug() << ("Status sequence for " + t->getFinalState() + " coming" + ":");
                 qDebug() << getInputs(getStatusSequence(t->getFinalState(), reachingSequence));
 
                 result << (getResetSequence() << reachingSequence << getStatusSequence(t->getFinalState(), reachingSequence));
